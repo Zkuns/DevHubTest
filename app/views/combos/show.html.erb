@@ -1,0 +1,21 @@
+<div>
+  <h1>OrderGroups</h1>
+</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">StartAt</th>
+      <th scope="col">EndAt</th>
+      <th scope="col">OrderCount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @order_groups.each do |group|%>
+      <tr>
+        <td><%= group.start_at %></td>
+        <td><%= group.end_at %></td>
+        <td><a href=<%= order_group_path(group) %>><%= group.orders.count %></a></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

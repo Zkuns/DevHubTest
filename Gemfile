@@ -30,6 +30,8 @@ gem 'devise'
 
 gem 'devise-bootstrap-views', '~> 1.0'
 
+gem 'sidekiq'
+
 group :development, :test do
   gem 'pry'
   gem 'rspec-rails', '~> 4.0.0'

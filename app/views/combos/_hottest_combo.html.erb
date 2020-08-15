@@ -1,0 +1,16 @@
+<div class="col mb-4">
+  <div class="card h-100">
+    <div class="card-body">
+      <h5 class="card-title"><%= combo.name %>(<%= @hottest_combo[combo.id] %> people subscribe last week)</h5>
+      <p class="card-text">Price: <%= combo.price %>$</p>
+      <p class="card-text">End_at: <%= combo.cut_off_week.capitalize %> <%= combo.cut_off_time.strftime('%H:%M:%S')%></p>
+      <p class="card-text"><%= combo.description %></p>
+      <% if current_user.subscribe? combo %>
+        <button type="button" class="btn btn-primary" disabled>subscribed</button>
+      <% else %>
+        <a href=<%= subscribe_combo_path(combo) %> type="button" class="btn btn-primary">Subscribe</a>
+      <% end %>
+      <a href=<%= combo_path(combo) %> type="button" class="btn btn-success">Detail</a>
+    </div>
+  </div>
+</div>

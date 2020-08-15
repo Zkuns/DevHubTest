@@ -12,8 +12,7 @@ class Subscription < ApplicationRecord
     time = Time.now
     order_group = combo.order_groups.find_by(end_at: nil)
     if time < combo.current_cut_off_time
-      #GenerateOrderJob.perform_later(self, order_group.id)
-      GenerateOrderJob.perform_now(self, order_group.id)
+      GenerateOrderJob.perform_later(self, order_group.id)
     end
   end
 
@@ -23,5 +22,7 @@ class Subscription < ApplicationRecord
       user.update!(balance: user.balance - combo.price)
       Order.create!(subscription_id: id, user: user, combo: combo, order_group_id: order_group_id)
     end
+  rescue Exception
+    # make notification to user
   end
 end

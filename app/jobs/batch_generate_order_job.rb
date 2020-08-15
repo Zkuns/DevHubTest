@@ -9,7 +9,13 @@ class BatchGenerateOrderJob < ApplicationJob
     order_group = combo.order_groups.find_by(end_at: nil)
 
     # 批量生成订单
-    combo.generate_orders order_group
+    combo.subscriptions.each do |subscription|
+      # 查看是否下过单，给之前订阅成功却因为余额不足的而没有生成订单的订阅再次尝试是否可以生成订单
+      return if subscription.orders.find_by(order_group_id: order_group_id).present?
+
+      # 生成订单
+      subscription.generate_order order_group_id
+    end
 
     # 结束上一段order_group
     order_group.update(end_at: combo.current_cut_off_time)

@@ -5,21 +5,16 @@ class Combo < ApplicationRecord
   has_many :subscriptions
 
   after_update :time_change
+  after_create :time_change
 
   def time_change
     # 如果是修改了当天的截止时间则需要重新执行任务
-    if (DateTime.now.strftime('%A') == week) && time.previous_changes[:time]
-      BatchGenerateOrderJob.perform_at(current_cut_off_time, self, current_cut_off_time)
+    if (DateTime.now.strftime('%A') == week) && previous_changes[:cut_off_time]
+      BatchGenerateOrderJob.set(wait_until: combo.current_cut_off_time).perform_later(combo, combo.current_cut_off_time)
     end
   end
 
   def current_cut_off_time
     DateTime.parse(cut_off_week).change(hour: cut_off_time.hour, min: cut_off_time.min)
-  end
-
-  def generate_orders order_group
-    subscriptions.each do |subscription|
-      GenerateOrderJob.perform_later(subscription, order_group.id)
-    end
   end
 end

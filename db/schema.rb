@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2020_08_11_143858) do
   create_table "combos", force: :cascade do |t|
     t.string "name"
     t.decimal "price", precision: 8, scale: 2
-    t.text "discription"
+    t.text "description"
     t.integer "cut_off_week", default: 0
     t.time "cut_off_time"
     t.datetime "created_at", precision: 6, null: false
@@ -27,17 +27,23 @@ ActiveRecord::Schema.define(version: 2020_08_11_143858) do
 
   create_table "order_groups", force: :cascade do |t|
     t.integer "combo_id"
-    t.integer "cut_off_week", default: 0
-    t.time "cut_off_time"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["combo_id"], name: "index_order_groups_on_combo_id"
   end
 
   create_table "orders", force: :cascade do |t|
     t.integer "user_id"
     t.integer "combo_id"
-    t.integer "group_id"
+    t.integer "order_group_id"
+    t.integer "subscription_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["combo_id"], name: "index_orders_on_combo_id"
-    t.index ["group_id"], name: "index_orders_on_group_id"
+    t.index ["order_group_id"], name: "index_orders_on_order_group_id"
+    t.index ["subscription_id"], name: "index_orders_on_subscription_id"
     t.index ["user_id", "combo_id"], name: "index_order_user_id_and_combo_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
@@ -48,7 +54,9 @@ ActiveRecord::Schema.define(version: 2020_08_11_143858) do
     t.integer "status", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["combo_id"], name: "index_subscriptions_on_combo_id"
     t.index ["user_id", "combo_id"], name: "index_subscription_user_id_and_combo_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -57,7 +65,7 @@ ActiveRecord::Schema.define(version: 2020_08_11_143858) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.decimal "balance", precision: 8, scale: 2
+    t.decimal "balance", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
